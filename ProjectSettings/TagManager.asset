@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - PlayerAttack
   - Payload
+  - Ally
   layers:
   - Default
   - TransparentFX

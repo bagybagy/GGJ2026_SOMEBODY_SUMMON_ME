@@ -264,4 +264,18 @@ public class Player : MonoBehaviour
         // 4. ゲームオーバーログ
         Debug.Log("<color=red>GAME OVER</color>");
     }
+
+    // 💡 追加: 蘇生アクション
+    public void OnRevive(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            if (ReviveManager.Instance != null)
+            {
+                ReviveManager.Instance.ReviveAll();
+                // 必要ならアニメーションや音「Hey! Come on!」を入れる
+                Debug.Log("Player used Revive!");
+            }
+        }
+    }
 }

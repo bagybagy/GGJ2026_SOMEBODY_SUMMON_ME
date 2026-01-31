@@ -104,14 +104,49 @@ public class StatusManager : MonoBehaviour
         if (isDead) return;
         isDead = true; // ★死亡確定
 
+        // 💡 修正: OnDeadでタグが変わる可能性があるので、先に判定しておく
+        bool wasEnemy = gameObject.CompareTag("Enemy");
+        bool wasAlly = gameObject.CompareTag("Ally");
+
+        // Step10.2 自身でDestroyせず、イベントで知らせる
+        // 💡 修正: 生成ロジックの前に「死んだ」ことを確定させる（タグ変更などを行わせるため）
+        OnDead?.Invoke();
+
         // 破壊エフェクトを発生させてから、MainObjectに設定したもの（自分自身や部位破壊対象）を破壊
         hp = 0;
+        
+        // 💡 変更: Enemyなら味方生成、Allyなら破壊キャンセル
+        if (wasEnemy)
+        {
+             // 味方生成
+             if (InfectionManager.Instance != null)
+             {
+                 InfectionManager.Instance.SpawnAlly(transform.position);
+             }
+             // 敵は破壊
+             if(MainObject != null) Destroy(MainObject, 0.1f);
+        }
+        else if (wasAlly)
+        {
+            // 味方は破壊しない（Dizzy）
+            // 何もしない
+        }
+        else
+        {
+            // その他は破壊
+            if(MainObject != null) Destroy(MainObject, 3.0f);
+        }
+
         var effect = Instantiate(destroyEffect);
         effect.transform.position = transform.position;
         Destroy(effect, 5);
-
-        // Step10.2 自身でDestroyせず、イベントで知らせる
-        OnDead?.Invoke();
+    }
+    
+    // 💡 追加: 蘇生用
+    public void Resurrect()
+    {
+        isDead = false;
+        MaxHeal();
     }
 
     // 💡 Step8.6 追加: ステータス計算メソッド

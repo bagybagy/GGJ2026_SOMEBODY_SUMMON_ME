@@ -50,6 +50,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Revive",
+                    "type": "Button",
+                    "id": "80311aac-ba85-4733-9b7a-a462b2960851",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -325,6 +334,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "CrossRangeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a48819a-43ac-49be-a8f8-879811583c87",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Revive",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9e45d1e8-46d5-4196-90a5-b154ea38056a",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Revive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

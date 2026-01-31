@@ -115,10 +115,49 @@ public class VFXDamageFeedback : MonoBehaviour
             gameObject.SetActive(false);
             // ※ここでTime.timeScale = 0; とか SceneManager.LoadScene などを呼ぶのが一般的
         }
+        else if (gameObject.CompareTag("Ally") || gameObject.CompareTag("Untagged")) // 💡 修正: Untaggedもチェック（Dizzy直前の状態によっては必要かもだが、基本はAlly）
+        {
+            // 💡 Ally（味方）の場合: Dizzy状態になるのでDestroyしない
+            // VFX側で「本体を消す(IsDead=true)」処理が走ると見えなくなる可能性がある。
+            // Dizzyなら「点滅」や「ダウン」表現にしたいが、今はとりあえずDestroyだけ回避する。
+            
+            // もしVFXグラフ側でIsDead=trueでパーティクルが完全に消える仕組みなら、
+            // ここでIsDead=falseに戻したりする必要があるかもしれない。
+            // 一旦Destroy回避のみ実装。
+            
+            // 💡 Dizzy状態なら何もしない（AllyAI側で制御される）
+            // ただし、もしIsDeadがTrueのままだとVFXが消えるなら、ここで蘇生待ちのエフェクト（煙など）を出すべきかも。
+        }
         else
         {
             // 敵の場合：消滅
             Destroy(gameObject);
         }
+    }
+
+
+    // 💡 追加: 蘇生時のリセット処理
+    public void Resurrect()
+    {
+        isDying = false;
+        
+        // イベント再購読（OnDeadで外しているため）
+        if (status != null)
+        {
+            status.OnDead -= PlayDeathEffect; // 念のため
+            status.OnDead += PlayDeathEffect;
+        }
+
+        // VFX状態リセット
+        foreach (var v in allVFXs)
+        {
+            if (v != null)
+            {
+                v.SetBool("IsDead", false); // 生存状態に戻す
+                v.Reinit(); // パーティクルシステムの再初期化（必要であれば）
+            }
+        }
+        
+        StopAllCoroutines();
     }
 }
