@@ -116,7 +116,7 @@ VisualEffect:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 85.445015, y: 0, z: 79.0679, w: 1}
+      - m_Value: {x: 85.445015, y: 0, z: 66.039764, w: 1}
         m_Name: Color
         m_Overridden: 1
     m_Uint:
@@ -395,6 +395,8 @@ GameObject:
   - component: {fileID: 6892756803058640249}
   - component: {fileID: 3857339114335097008}
   - component: {fileID: -992236645229373404}
+  - component: {fileID: 2037893889768245615}
+  - component: {fileID: -2613352447923723381}
   m_Layer: 11
   m_Name: Ally_HatMask
   m_TagString: Ally
@@ -508,7 +510,7 @@ MonoBehaviour:
   actionType: 0
   dashSpeed: 15
   dashDuration: 0.5
-  dashCooldown: 2
+  dashCooldown: 1
   dashPreparationTime: 1
   attackCollider: {fileID: 3801755715768452666}
 --- !u!114 &3500080156026001987
@@ -528,7 +530,7 @@ MonoBehaviour:
   swayFrequency: 5
   dampingFactor: 0.9
   swayTimeOffset: 0
-  watchDuration: 2
+  watchDuration: 0.5
 --- !u!195 &9041817208286768725
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -602,3 +604,40 @@ MonoBehaviour:
   actionWaitDuration: 0.2
   moveSpeed: 3.5
   mergeLevel: 1
+--- !u!114 &2037893889768245615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4249040475002768782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55eea25ac74105d4698a18bffa73bed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionType: 0
+  followUpdateInterval: 0.5
+  stopDistance: 3
+--- !u!114 &-2613352447923723381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4249040475002768782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad789609069a6144581ebca235b9dbef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionType: 0
+  maxJumpDistance: 15
+  minJumpDistance: 1
+  jumpHeight: 1
+  jumpInterval: 0.1
+  impactRadius: 2.5
+  impactForce: 8
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 0

@@ -60,9 +60,19 @@ public class EnemyAI : MonoBehaviour
 
         // 💡 Step7.2 変更点: 全アクションを取得して、タイプごとに振り分ける
         var allActions = GetComponents<EnemyAction>();
-        
+        Debug.Log($"[AI Debug] {gameObject.name}: Found {allActions.Length} actions attached.");
+
         foreach (var action in allActions)
         {
+            // インスペクターで無効化されているものは除外
+            if (!action.enabled)
+            {
+                 Debug.Log($"[AI Debug] {gameObject.name}: Ignored disabled action -> {action.GetType().Name}");
+                 continue;
+            }
+
+            Debug.Log($"[AI Debug] {gameObject.name}: Registered action -> {action.GetType().Name} ({action.actionType})");
+
             if (action.actionType == ActionType.Chase)
             {
                 chaseAction = action; // 追跡用として登録

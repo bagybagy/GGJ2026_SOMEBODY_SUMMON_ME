@@ -509,7 +509,7 @@ MonoBehaviour:
   actionType: 0
   dashSpeed: 15
   dashDuration: 0.5
-  dashCooldown: 2
+  dashCooldown: 1
   dashPreparationTime: 1
   attackCollider: {fileID: 3801755715768452666}
 --- !u!114 &3500080156026001987
@@ -529,7 +529,7 @@ MonoBehaviour:
   swayFrequency: 5
   dampingFactor: 0.9
   swayTimeOffset: 0
-  watchDuration: 2
+  watchDuration: 0.5
 --- !u!195 &9041817208286768725
 NavMeshAgent:
   m_ObjectHideFlags: 0

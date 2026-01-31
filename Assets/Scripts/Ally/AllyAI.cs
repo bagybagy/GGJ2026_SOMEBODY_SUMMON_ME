@@ -80,22 +80,33 @@ public class AllyAI : MonoBehaviour
 
         // アクション取得（EnemyActionを流用）
         var allActions = GetComponents<EnemyAction>();
+        Debug.Log($"[AI Debug] {gameObject.name} (Ally): Found {allActions.Length} actions attached.");
+
         foreach (var action in allActions)
         {
+            // 💡 修正: インスペクターで無効化(チェックを外す)されているコンポーネントは無視する
+            if (!action.enabled) 
+            {
+                Debug.Log($"[AI Debug] {gameObject.name}: Ignored disabled action -> {action.GetType().Name}");
+                continue;
+            }
+
             // 💡 重要: Followアクションは攻撃/追跡リストに入れない（型で判定）
             if (action is AllyActionFollow)
             {
                 followAction = (AllyActionFollow)action;
-                Debug.Log("AllyAI: Follow Action Registered (Excluded from Battle)");
+                Debug.Log($"[AI Debug] {gameObject.name}: Registered Follow action -> {action.GetType().Name}");
                 continue;
             }
 
             if (action.actionType == ActionType.Chase)
             {
+                Debug.Log($"[AI Debug] {gameObject.name}: Registered Chase action -> {action.GetType().Name}");
                 chaseAction = action; 
             }
             else
             {
+                Debug.Log($"[AI Debug] {gameObject.name}: Registered Attack action -> {action.GetType().Name}");
                 attackActions.Add(action); 
             }
         }
@@ -248,7 +259,7 @@ public class AllyAI : MonoBehaviour
                             currentState = AllyState.Follow;
                         }
                     }
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.1f);
                     break;
             }
 
