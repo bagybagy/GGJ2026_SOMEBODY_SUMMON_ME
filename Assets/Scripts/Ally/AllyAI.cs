@@ -59,10 +59,14 @@ public class AllyAI : MonoBehaviour
     private AllyActionFollow followAction;
     private bool isGathering = false; // 集合命令中かフラグ
 
+    // 💡 アニメーター参照
+    private Animator animator;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         statusManager = GetComponent<StatusManager>();
+        animator = GetComponentInChildren<Animator>();
         
         // プレイヤーを探しておく
         GameObject player = GameObject.FindWithTag("Player");
@@ -78,35 +82,26 @@ public class AllyAI : MonoBehaviour
             statusManager.OnDead += OnDeadHandler;
         }
 
-        // アクション取得（EnemyActionを流用）
+        // ... (省略: アクション取得) ...
         var allActions = GetComponents<EnemyAction>();
-        Debug.Log($"[AI Debug] {gameObject.name} (Ally): Found {allActions.Length} actions attached.");
-
+        
         foreach (var action in allActions)
         {
-            // 💡 修正: インスペクターで無効化(チェックを外す)されているコンポーネントは無視する
-            if (!action.enabled) 
-            {
-                Debug.Log($"[AI Debug] {gameObject.name}: Ignored disabled action -> {action.GetType().Name}");
-                continue;
-            }
+             // ... (省略) ...
+            if (!action.enabled) continue;
 
-            // 💡 重要: Followアクションは攻撃/追跡リストに入れない（型で判定）
             if (action is AllyActionFollow)
             {
                 followAction = (AllyActionFollow)action;
-                Debug.Log($"[AI Debug] {gameObject.name}: Registered Follow action -> {action.GetType().Name}");
                 continue;
             }
 
             if (action.actionType == ActionType.Chase)
             {
-                Debug.Log($"[AI Debug] {gameObject.name}: Registered Chase action -> {action.GetType().Name}");
                 chaseAction = action; 
             }
             else
             {
-                Debug.Log($"[AI Debug] {gameObject.name}: Registered Attack action -> {action.GetType().Name}");
                 attackActions.Add(action); 
             }
         }
@@ -401,6 +396,9 @@ public class AllyAI : MonoBehaviour
         StopAllCoroutines();
         currentState = AllyState.Dizzy;
         
+        // アニメーション: Knockout Trigger
+        if (animator != null) animator.SetTrigger("Knockout");
+
         // 物理停止
         if (rb != null)
         {
@@ -416,6 +414,10 @@ public class AllyAI : MonoBehaviour
     public void Revive()
     {
         Debug.Log("Ally Revived!");
+        
+        // アニメーション: Revive Trigger
+        if (animator != null) animator.SetTrigger("Revive");
+
         currentState = AllyState.Wander;
         this.enabled = true;
         StartCoroutine(MainStateMachine());

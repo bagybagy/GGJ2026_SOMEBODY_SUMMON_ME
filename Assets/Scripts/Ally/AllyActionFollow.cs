@@ -80,14 +80,11 @@ public class AllyActionFollow : EnemyAction
 
     private IEnumerator FollowSequence()
     {
+        // 走りON
+        AnimSetRun(true);
+
         // 終了条件は外部（AllyAIのステート切り替え）に任せるので、無限ループ
-        // または一定時間で区切るか。今回はAllyAI側で制御する想定なので無限ループさせるが、
-        // Executeが終了しないと次の行動に移れないEnemyAIの設計上、
-        // 「一定時間歩く」か「近づいたら終わる」必要がある。
-        
-        // 仕様変更: AllyAIのStateがFollowである限り、Executeを呼び続ける設計にするか、
-        // 一度のExecuteで目標地点まで行くか。
-        // ここでは「近づくまで実行」にする。
+        // ... (省略) ...
 
         while (true)
         {
@@ -107,6 +104,8 @@ public class AllyActionFollow : EnemyAction
              yield return new WaitForSeconds(followUpdateInterval);
         }
 
+        // 走りOFF
+        AnimSetRun(false);
         StopAgent();
     }
 }

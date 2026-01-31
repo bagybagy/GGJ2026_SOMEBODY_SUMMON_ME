@@ -75,6 +75,9 @@ public class EnemyActionChase : EnemyAction
     // 実際の追跡ロジック
     private IEnumerator ChaseSequence()
     {
+        // 走りアニメーションON
+        AnimSetRun(true);
+
         float timer = 0f;
         
         // 指定時間だけ追いかけ続ける
@@ -87,11 +90,13 @@ public class EnemyActionChase : EnemyAction
             }
             
             // 毎フレーム更新
-            // RigidbodyではないのでFixdUpdateを待つのではなく、単にUpdateを待つnullでOK
             yield return null; 
             timer += Time.deltaTime;
         }
         
+        // 走りアニメーションOFF
+        AnimSetRun(false);
+
         // 時間が来たら終了処理
         StopAgent();
     }

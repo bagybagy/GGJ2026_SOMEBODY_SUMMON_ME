@@ -62,6 +62,10 @@ public class EnemyActionDash : EnemyAction
         float startTime = Time.time;
         // 予備動作に小ジャンプを追加
         rb.AddForce(Vector3.up * 3.0f, ForceMode.Impulse);
+        
+        // アニメーション: ジャンプ
+        AnimTriggerJump();
+
         // タメ動作中、ターゲットの方を向き続けます
         while (Time.time < startTime + dashPreparationTime)
         {
@@ -78,6 +82,10 @@ public class EnemyActionDash : EnemyAction
         dashDirection.Normalize();
         startTime = Time.time;
         
+        // アニメーション: 攻撃トリガー (CrossRangeAttack)
+        // または走ってもいいが、攻撃なのでAttack
+        AnimTriggerAttack();
+
         // 突進開始時に攻撃判定を有効にする
         AttackColliderOn();
 

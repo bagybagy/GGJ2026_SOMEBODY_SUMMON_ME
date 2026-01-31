@@ -109,6 +109,9 @@ public class EnemyActionBounce : EnemyAction
         jumpVelocity.y = v0_y;
         
         // 2. ジャンプ実行
+        // アニメーション
+        AnimTriggerJump();
+
         // 一瞬だけ敵の方を向く
         if (jumpDir != Vector3.zero)
         {

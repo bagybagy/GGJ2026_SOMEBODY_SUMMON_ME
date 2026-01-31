@@ -43,4 +43,36 @@ public abstract class EnemyAction : MonoBehaviour
             return null;
         }
     }
+
+    // 💡 アニメーター参照（遅延取得）
+    private Animator _animator;
+    protected Animator Anim
+    {
+        get
+        {
+            if (_animator == null)
+            {
+                // "Visual"という名前の子オブジェクトにあるかもしれないし、直下にあるかもしれない
+                // InChildrenなら見つかるはず
+                _animator = GetComponentInChildren<Animator>();
+            }
+            return _animator;
+        }
+    }
+
+    // --- アニメーション再生用ヘルパー ---
+    protected void AnimSetRun(bool isRun)
+    {
+        if (Anim != null) Anim.SetBool("Run", isRun);
+    }
+
+    protected void AnimTriggerJump()
+    {
+        if (Anim != null) Anim.SetTrigger("Jump");
+    }
+
+    protected void AnimTriggerAttack()
+    {
+        if (Anim != null) Anim.SetTrigger("CrossRangeAttack");
+    }
 }
