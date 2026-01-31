@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 3184435821137961412, guid: 7b9e4394de47c514398e91f61c8db01d, type: 3}
-  dropCount: 3
+  dropCount: 0
   spreadForce: 5
 --- !u!1 &4249040475002768782
 GameObject:
@@ -387,11 +387,11 @@ GameObject:
   - component: {fileID: 4739237705030279021}
   - component: {fileID: 4085716138102183514}
   - component: {fileID: 8021482142654438895}
-  - component: {fileID: 8478180697490827326}
   - component: {fileID: 3500080156026001987}
   - component: {fileID: 9041817208286768725}
   - component: {fileID: 6892756803058640249}
   - component: {fileID: 3857339114335097008}
+  - component: {fileID: 6146436951619332461}
   m_Layer: 10
   m_Name: IntelligenceEnemy
   m_TagString: Enemy
@@ -462,8 +462,8 @@ MonoBehaviour:
   currentAttack: 0
   currentCritRate: 0
   popupPrefab: {fileID: 3370638208151353108, guid: 3891d86a4744c554b861cb7e782209a5, type: 3}
-  destroyEffect: {fileID: 1430198582188953287, guid: 21b15d55fb362544fab3a70419757060, type: 3}
-  damageEffect: {fileID: 8962295279383145195, guid: 7cdd99d9641263e498d658cb227be266, type: 3}
+  destroyEffect: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
+  damageEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e, type: 3}
 --- !u!54 &4085716138102183514
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -503,29 +503,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e8fe274bc29a0148bd710c293c712d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultTargetTag: Payload
+  defaultTargetTag: Player
   attackRange: 7
   knockbackPower: 5
   knockbackDuration: 0.5
   actionWaitDuration: 0.2
---- !u!114 &8478180697490827326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4249040475002768782}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4142d85206e5a54b8ce916e6c2aa753, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actionType: 0
-  dashSpeed: 15
-  dashDuration: 0.5
-  dashCooldown: 2
-  dashPreparationTime: 1
-  attackCollider: {fileID: 3801755715768452666}
 --- !u!114 &3500080156026001987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,6 +578,22 @@ MonoBehaviour:
   trailPropertyName: TrailRate
   glitchDuration: 0.5
   glitchPower: 25
+--- !u!114 &6146436951619332461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4249040475002768782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfd97b82e31e7d34daf6d725d8b150ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionType: 0
+  attackDuration: 0.5
+  cooldown: 2
+  attackCollider: {fileID: 0}
 --- !u!1001 &2197712083875957470
 PrefabInstance:
   m_ObjectHideFlags: 0

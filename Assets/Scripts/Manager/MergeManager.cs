@@ -11,6 +11,8 @@ public class MergeManager : MonoBehaviour
     [SerializeField] private GameObject hatMaskPrefab; // HatMaskプレハブ
     [SerializeField] private int requiredAllyCount = 10;
     [SerializeField] private float mergeRange = 10f; // プレイヤー周囲の有効範囲
+    [SerializeField] private GameObject mergeEffectPrefab; // 💡 追加: 合体時の煙エフェクト
+    [SerializeField] private float spawnYOffset = 0.5f; // 💡 追加: 生成時の高さ調整
 
     // 💡 追加: 合体対象とするレベル（0ならMiniMaskだけを集める）
     [SerializeField] private int targetMergeLevel = 0;
@@ -91,6 +93,12 @@ public class MergeManager : MonoBehaviour
                 if (count >= requiredAllyCount) break;
 
                 // 💡 修正: ルートオブジェクトを削除
+                // エフェクト生成 (煙など)
+                if (mergeEffectPrefab != null)
+                {
+                    Instantiate(mergeEffectPrefab, ai.transform.position, Quaternion.identity);
+                }
+                
                 Destroy(ai.gameObject);
                 count++;
             }
@@ -98,7 +106,9 @@ public class MergeManager : MonoBehaviour
             // 4. HatMask生成
             if (hatMaskPrefab != null)
             {
-                Instantiate(hatMaskPrefab, playerPosition, Quaternion.identity);
+                // 💡 修正: Y軸方向に少し浮かせて生成
+                Vector3 spawnPos = playerPosition + Vector3.up * spawnYOffset;
+                Instantiate(hatMaskPrefab, spawnPos, Quaternion.identity);
                 Debug.Log("Merge: HatMask Summoned!");
             }
             else

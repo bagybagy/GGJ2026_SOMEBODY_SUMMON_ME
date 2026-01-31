@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde2ae2149da7004fabdb12b0310b71b, type: 3}
   m_Name: EnemyStats
   m_EditorClassIdentifier: 
-  MaxHp: 100
+  MaxHp: 20
   AttackPower: 10
   CriticalRate: 0.2
   HpGrowth: 30

@@ -375,7 +375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 3184435821137961412, guid: 7b9e4394de47c514398e91f61c8db01d, type: 3}
-  dropCount: 3
+  dropCount: 0
   spreadForce: 5
 --- !u!1 &4249040475002768782
 GameObject:
@@ -466,8 +466,8 @@ MonoBehaviour:
   currentAttack: 0
   currentCritRate: 0
   popupPrefab: {fileID: 3370638208151353108, guid: 3891d86a4744c554b861cb7e782209a5, type: 3}
-  destroyEffect: {fileID: 1430198582188953287, guid: 21b15d55fb362544fab3a70419757060, type: 3}
-  damageEffect: {fileID: 8962295279383145195, guid: 7cdd99d9641263e498d658cb227be266, type: 3}
+  destroyEffect: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
+  damageEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e, type: 3}
 --- !u!54 &4085716138102183514
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -599,8 +599,8 @@ MonoBehaviour:
   attackRange: 7
   followRange: 10
   stopFollowRange: 3
-  knockbackPower: 10
-  knockbackDuration: 0.5
+  knockbackPower: 2
+  knockbackDuration: 0.2
   actionWaitDuration: 0.2
   moveSpeed: 3.5
   mergeLevel: 0
