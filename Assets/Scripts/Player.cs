@@ -268,14 +268,39 @@ public class Player : MonoBehaviour
     // 💡 追加: 蘇生アクション
     public void OnRevive(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.performed)
         {
             if (ReviveManager.Instance != null)
             {
                 ReviveManager.Instance.ReviveAll();
-                // 必要ならアニメーションや音「Hey! Come on!」を入れる
                 Debug.Log("Player used Revive!");
             }
+        }
+    }
+
+    // 💡 追加: 合体アクション
+    public void OnMerge(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (MergeManager.Instance != null)
+            {
+                MergeManager.Instance.TryMerge(transform.position);
+            }
+        }
+    }
+
+    // Updateに追加でデバッグキー実装（InputSystem未設定時のため）
+    private void Update()
+    {
+        // 開発用ショートカット: Rで蘇生、Mで合体
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            if (ReviveManager.Instance != null) ReviveManager.Instance.ReviveAll();
+        }
+        if (Keyboard.current.mKey.wasPressedThisFrame)
+        {
+            if (MergeManager.Instance != null) MergeManager.Instance.TryMerge(transform.position);
         }
     }
 }

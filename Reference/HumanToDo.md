@@ -9,3 +9,6 @@
 - [ ] **シーン設定 (蘇生)**: 空の GameObject `ReviveManager` を作成し、`ReviveManager.cs` をアタッチしてください。
 - [ ] **アセット参照**: `ReviveManager` の `Revive Effect Prefab` に適当なエフェクトプレハブを割り当ててください（任意）。
 - [ ] **シーン設定 (テスト用)**: 感染機能テストのため、タグ `Enemy` のオブジェクトをシーンにいくつか配置してください。
+- [ ] **シーン設定 (合体)**: 空の GameObject `MergeManager` を作成し、`MergeManager.cs` をアタッチしてください。
+- [ ] **アセット参照**: `MergeManager` の `Hat Mask Prefab` に、合体後に生成するプレハブ（HatMask）をアサインしてください。
+- [ ] **Player.inputactions (任意)**: `Merge` アクションを追加し、キーを設定してください (例: M)。※現在は `M` キーのハードコードでも動作します。

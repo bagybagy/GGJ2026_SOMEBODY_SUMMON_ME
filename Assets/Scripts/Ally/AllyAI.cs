@@ -39,6 +39,14 @@ public class AllyAI : MonoBehaviour
     [SerializeField] float knockbackDuration = 0.5f;
     [SerializeField] float actionWaitDuration = 0.2f;
 
+    [Header("Settings")]
+    [SerializeField] private float moveSpeed = 3.5f;
+
+    // 💡 追加: マージレベル（0: MiniMask, 1: HatMask ...）
+    // スイカゲームのように、同じレベル同士を合体させたり、上位レベルを合体対象から外すのに使う
+    [Header("Merge Settings")]
+    public int mergeLevel = 0;
+
     // 現在の状態
     private AllyState currentState = AllyState.Chase;
     // 現在実行中のアクション
