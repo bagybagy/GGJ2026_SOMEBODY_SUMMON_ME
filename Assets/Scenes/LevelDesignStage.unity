@@ -2464,6 +2464,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: bff0dd76-18a7-4ecb-a498-f8c159193795
     m_ActionName: 'Player/CrossRangeAttack[/Keyboard/z]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 80311aac-ba85-4733-9b7a-a462b2960851
+    m_ActionName: 'Player/Revive[/Keyboard/r]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -5713,6 +5717,55 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a262c299ad3d2d4faa34e25ed0944f0, type: 3}
+--- !u!1 &1458081141
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1458081143}
+  - component: {fileID: 1458081142}
+  m_Layer: 0
+  m_Name: MargeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1458081142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458081141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9abc560e51818974298753a9a97b61f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hatMaskPrefab: {fileID: 4249040475002768782, guid: 3f4e8ec9fc0cf304a9cd211f16dee258, type: 3}
+  requiredAllyCount: 3
+  mergeRange: 100
+  targetMergeLevel: 0
+  autoMerge: 1
+--- !u!4 &1458081143
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458081141}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1493247722 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7882376022164389543, guid: 5681276c5622ac1448ef080b4ed4b76c, type: 3}
@@ -7268,6 +7321,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 80311aac-ba85-4733-9b7a-a462b2960851
     m_ActionName: 'Player/Revive[/Keyboard/r]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1831250866}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnGather
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 867d6a1f-c700-49b8-88d6-498cf4de90ee
+    m_ActionName: 'Player/Gather[/Keyboard/g]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -8023,3 +8092,4 @@ SceneRoots:
   - {fileID: 571486776}
   - {fileID: 322135784}
   - {fileID: 210330949}
+  - {fileID: 1458081143}

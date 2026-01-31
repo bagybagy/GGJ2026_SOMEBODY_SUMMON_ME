@@ -55,6 +55,10 @@ public class AllyAI : MonoBehaviour
     // プレイヤーの参照（Follow用）
     private Transform playerTransform;
 
+    // 💡 追加: 追従アクション
+    private AllyActionFollow followAction;
+    private bool isGathering = false; // 集合命令中かフラグ
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -78,6 +82,14 @@ public class AllyAI : MonoBehaviour
         var allActions = GetComponents<EnemyAction>();
         foreach (var action in allActions)
         {
+            // 💡 重要: Followアクションは攻撃/追跡リストに入れない（型で判定）
+            if (action is AllyActionFollow)
+            {
+                followAction = (AllyActionFollow)action;
+                Debug.Log("AllyAI: Follow Action Registered (Excluded from Battle)");
+                continue;
+            }
+
             if (action.actionType == ActionType.Chase)
             {
                 chaseAction = action; 
@@ -101,6 +113,35 @@ public class AllyAI : MonoBehaviour
         }
     }
 
+    // 💡 追加: 外部からの集合命令
+    public void ForceGather()
+    {
+        if (currentState == AllyState.Dizzy) return;
+        
+        Debug.Log("Ally Gather Command Received!");
+        isGathering = true;
+        // 現在のアクションを中断して集合へ
+        StopAllCoroutines();
+        if (currentAction != null) currentAction.Stop();
+        
+        currentState = AllyState.Follow;
+        target = null; // ターゲット破棄
+        
+        StartCoroutine(MainStateMachine());
+    }
+
+    public void StopGather()
+    {
+        // 命令解除
+        isGathering = false;
+    }
+
+    private AllyActionFollow GetFollowAction()
+    {
+        if(followAction == null) followAction = GetComponent<AllyActionFollow>();
+        return followAction;
+    }
+
     // 🧠 メインステートマシン
     private IEnumerator MainStateMachine()
     {
@@ -116,10 +157,21 @@ public class AllyAI : MonoBehaviour
             switch (currentState)
             {
                 case AllyState.Chase:
+                    // 集合命令が出たら中断してFollowへ
+                    if (isGathering) 
+                    {
+                        currentState = AllyState.Follow;
+                        break;
+                    }
                     yield return StartCoroutine(DoActionRoutine(chaseAction));
                     break;
 
                 case AllyState.Battle:
+                    if (isGathering) 
+                    {
+                        currentState = AllyState.Follow;
+                        break;
+                    }
                     EnemyAction selectedAction = null;
                     if (attackActions.Count > 0)
                     {
@@ -130,24 +182,50 @@ public class AllyAI : MonoBehaviour
 
                 case AllyState.Stun:
                     yield return new WaitForSeconds(knockbackDuration);
-                    currentState = AllyState.Battle;
+                    currentState = CheckNextState(); // 復帰判断
                     break;
                 
                 case AllyState.Follow:
-                    // 追跡アクションを使ってプレイヤーへ向かう
-                    Transform originalTarget = target;
-                    target = playerTransform;
-                    yield return StartCoroutine(DoActionRoutine(chaseAction));
-                    target = originalTarget; // 戻す
-                    
-                    // プレイヤーに近づいたらWander/Searchに戻る
-                     if (playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) < stopFollowRange)
+                    // 追従アクション実行
+                    EnemyAction act = GetFollowAction();
+                    if (act != null)
                     {
-                        currentState = AllyState.Wander; 
+                         yield return StartCoroutine(DoActionRoutine(act));
                     }
-                    else if (playerTransform == null)
+                    else
                     {
-                        currentState = AllyState.Wander;
+                        // なければ仕方ないので待機
+                        yield return new WaitForSeconds(0.5f);
+                    }
+                    
+                    // アクション終了後の判断
+
+                    // 1. 敵がいれば戦う（集合命令中でも自衛はする、あるいは命令優先ならここを変える）
+                    // 今回は「敵がいたら戦う」を優先し、戦い終わったらまた集合する挙動にする
+                    SearchDefaultTarget();
+                    if (target != null)
+                    {
+                        // 敵発見 -> 集合は一時中断扱い（フラグは維持してもいいが、Stateを変える）
+                        currentState = AllyState.Chase;
+                        // 戦闘に入ったら集合命令を解除するか？ -> 今回は「解除する」
+                        isGathering = false;
+                    }
+                    else
+                    {
+                        // 敵がいない
+                        if (isGathering)
+                        {
+                            // まだ命令中ならFollow継続
+                            currentState = AllyState.Follow;
+                        }
+                        else
+                        {
+                            // 自律モード
+                            if (playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) < stopFollowRange)
+                            {
+                                currentState = AllyState.Wander;
+                            }
+                        }
                     }
                     break;
 
@@ -160,8 +238,12 @@ public class AllyAI : MonoBehaviour
                     }
                     else
                     {
-                        // 暇ならプレイヤーについていく判定
-                        if(playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) > followRange)
+                        // 集合命令が出ている、または離れすぎている
+                        if (isGathering)
+                        {
+                            currentState = AllyState.Follow;
+                        }
+                        else if(playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) > followRange)
                         {
                             currentState = AllyState.Follow;
                         }

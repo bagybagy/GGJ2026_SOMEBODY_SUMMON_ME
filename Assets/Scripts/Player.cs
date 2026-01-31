@@ -290,10 +290,28 @@ public class Player : MonoBehaviour
         }
     }
 
+    // 💡 追加: 集合アクション
+    public void OnGather(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+             // トグルにするか、押している間だけにするかは仕様次第だが、
+             // 今回は「トグル」または「一度呼ぶと集合開始」とする。
+             // AllyAIの仕様上、Stopを呼ばないと解除されないので、ボタンを押すたびに切り替える実装にする例：
+             
+             // 簡易実装: ボタンを押したら強制集合（解除は今のところなし、もしくはもう一度押すと解除？）
+             // とりあえず発動のみ
+             if (InfectionManager.Instance != null)
+             {
+                 InfectionManager.Instance.BroadcastGatherCommand();
+             }
+        }
+    }
+    
     // Updateに追加でデバッグキー実装（InputSystem未設定時のため）
     private void Update()
     {
-        // 開発用ショートカット: Rで蘇生、Mで合体
+        // 開発用ショートカット: Rで蘇生、Mで合体、Gで集合
         if (Keyboard.current.rKey.wasPressedThisFrame)
         {
             if (ReviveManager.Instance != null) ReviveManager.Instance.ReviveAll();
@@ -301,6 +319,10 @@ public class Player : MonoBehaviour
         if (Keyboard.current.mKey.wasPressedThisFrame)
         {
             if (MergeManager.Instance != null) MergeManager.Instance.TryMerge(transform.position);
+        }
+        if (Keyboard.current.gKey.wasPressedThisFrame)
+        {
+            if (InfectionManager.Instance != null) InfectionManager.Instance.BroadcastGatherCommand();
         }
     }
 }

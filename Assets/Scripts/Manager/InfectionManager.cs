@@ -38,4 +38,35 @@ public class InfectionManager : MonoBehaviour
         Instantiate(allyPrefab, spawnPos, Quaternion.identity);
         Debug.Log($"Ally spawned at {spawnPos}");
     }
+
+    // 💡 追加: 全Allyに集合命令を出す
+    public void BroadcastGatherCommand()
+    {
+        GameObject[] allies = GameObject.FindGameObjectsWithTag("Ally");
+        foreach(var obj in allies)
+        {
+            // まずルートのAIを取得
+            AllyAI ai = obj.GetComponentInParent<AllyAI>();
+            // ヒットボックス等でなければ実行
+            if(ai != null)
+            {
+                ai.ForceGather();
+            }
+        }
+        Debug.Log("InfectionManager: Gather Command Broadcasted!");
+    }
+
+    // 集合解除（必要なら）
+    public void BroadcastStopGatherCommand()
+    {
+        GameObject[] allies = GameObject.FindGameObjectsWithTag("Ally");
+        foreach(var obj in allies)
+        {
+            AllyAI ai = obj.GetComponentInParent<AllyAI>();
+            if(ai != null)
+            {
+                ai.StopGather();
+            }
+        }
+    }
 }
