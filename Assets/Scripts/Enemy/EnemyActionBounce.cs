@@ -15,6 +15,13 @@ public class EnemyActionBounce : EnemyAction
     [SerializeField] float jumpHeight = 3.0f;      // ジャンプの高さ (頂点)
     [SerializeField] float jumpInterval = 0.5f;    // ジャンプ間の待機時間
 
+    [Header("Animation Settings")]
+    [SerializeField] Transform visualTransform;    // スケール変更する対象（未指定なら自分自身）
+    [SerializeField] Vector3 squashScale = new Vector3(1.3f, 0.6f, 1.3f); // 予備動作：潰れる
+    [SerializeField] Vector3 stretchScale = new Vector3(0.7f, 1.4f, 0.7f); // ジャンプ中：伸びる
+    [SerializeField] Vector3 landScale = new Vector3(1.4f, 0.5f, 1.4f);   // 着地：潰れる（または拡大）
+    [SerializeField] float animDuration = 0.15f;   // 変形にかかる時間
+
     [Header("Impact Settings")]
     [SerializeField] float impactRadius = 2.5f;    // 着地時の衝撃波範囲
     [SerializeField] float impactForce = 8.0f;     // ノックバック力
@@ -38,6 +45,9 @@ public class EnemyActionBounce : EnemyAction
         {
             targetLayers = LayerMask.GetMask("Player", "Enemy", "Default"); 
         }
+
+        // ビジュアル指定がなければ自分自身（ただしルートを直接弄ると物理に影響が出る可能性あり）
+        if (visualTransform == null) visualTransform = transform;
     }
 
     public override IEnumerator Execute()
@@ -61,12 +71,15 @@ public class EnemyActionBounce : EnemyAction
         // 動きを止める
         if (rb != null) rb.linearVelocity = Vector3.zero;
 
+        // スケールを戻す
+        if (visualTransform != null) visualTransform.localScale = Vector3.one;
+
         // NavMeshAgentを戻しておく（他のアクションが使うかもしれないため）
         if (agent != null)
         {
-             agent.enabled = true;
-             // 一旦パスをリセットしないと、有効化した瞬間にワープすることがある
-             agent.ResetPath();
+            agent.enabled = true;
+            // 一旦パスをリセットしないと、有効化した瞬間にワープすることがある
+            agent.ResetPath();
         }
     }
 
@@ -107,10 +120,18 @@ public class EnemyActionBounce : EnemyAction
         // 速度ベクトル作成
         Vector3 jumpVelocity = jumpDir * v0_x;
         jumpVelocity.y = v0_y;
-        
+
+        // --- 予備動作 (Squash) ---
+        // 少し潰れて力をためる
+        yield return StartCoroutine(TweenScale(squashScale, animDuration));
+
         // 2. ジャンプ実行
         // アニメーション
         AnimTriggerJump();
+
+        // --- ジャンプ開始 (Stretch) ---
+        // 伸びる
+        StartCoroutine(TweenScale(stretchScale, 0.1f));
 
         // 一瞬だけ敵の方を向く
         if (jumpDir != Vector3.zero)
@@ -121,20 +142,47 @@ public class EnemyActionBounce : EnemyAction
         rb.linearVelocity = jumpVelocity;
         
         // 3. 着地待ち（滞空時間分待つ）
-        // 厳密にはCollisionで判定したいが、地形が複雑でないなら時間待ちでも近似できる。
-        // 今回はシンプルに時間待ち＋着地補正
-        yield return new WaitForSeconds(t_flight);
+        // 滞空時間の半分くらいで元のスケールに戻し始める
+        yield return new WaitForSeconds(t_flight * 0.5f);
+        StartCoroutine(TweenScale(Vector3.one, 0.2f)); // 空中で元に戻る
+        yield return new WaitForSeconds(t_flight * 0.5f);
         
         // 4. 着地エフェクト＆攻撃
         rb.linearVelocity = Vector3.zero; // 着地したらピタッと止まる（スライディング防止）
         
         DoLandingImpact();
+
+        // --- 着地 (Land / Expand) ---
+        // 衝撃で少し潰れる、または大きくなる
+        yield return StartCoroutine(TweenScale(landScale, 0.1f));
+        // 元に戻る
+        yield return StartCoroutine(TweenScale(Vector3.one, 0.2f));
         
         // 5. 少し待機（着地硬直のようなもの）してから終了
         // これがないと即座に次のジャンプ判定に行き、見た目が忙しなくなる可能性がある
         yield return new WaitForSeconds(jumpInterval);
         
         // ループせずに終了 -> AIが次の判断を行う
+    }
+
+    // スケールアニメーション用コルーチン
+    private IEnumerator TweenScale(Vector3 targetScale, float duration)
+    {
+        if (visualTransform == null) yield break;
+
+        Vector3 initialScale = visualTransform.localScale;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            // EaseOutBackっぽい動きを入れるとよりCartoonらしくなるが、とりあえずLerpで実装
+            visualTransform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+            yield return null;
+        }
+
+        visualTransform.localScale = targetScale;
     }
 
     private void DoLandingImpact()

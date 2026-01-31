@@ -392,6 +392,7 @@ GameObject:
   - component: {fileID: 6892756803058640249}
   - component: {fileID: 3857339114335097008}
   - component: {fileID: 6146436951619332461}
+  - component: {fileID: 8279367219691378978}
   m_Layer: 10
   m_Name: IntelligenceEnemy
   m_TagString: Enemy
@@ -585,7 +586,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4249040475002768782}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfd97b82e31e7d34daf6d725d8b150ca, type: 3}
   m_Name: 
@@ -594,6 +595,25 @@ MonoBehaviour:
   attackDuration: 0.5
   cooldown: 2
   attackCollider: {fileID: 0}
+--- !u!114 &8279367219691378978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4249040475002768782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7996f1438d2b1504bbcc641d849884c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionType: 0
+  projectilePrefab: {fileID: 794671614004829523, guid: ac282dbf7168ce340b2223f888a749a2, type: 3}
+  muzzlePoint: {fileID: 1870522177002925365}
+  faceTargetSpeed: 5
+  burstCount: 1
+  burstInterval: 0.2
+  cooldown: 2
 --- !u!1001 &2197712083875957470
 PrefabInstance:
   m_ObjectHideFlags: 0

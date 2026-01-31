@@ -397,6 +397,7 @@ GameObject:
   - component: {fileID: -992236645229373404}
   - component: {fileID: 2037893889768245615}
   - component: {fileID: -2613352447923723381}
+  - component: {fileID: 7033753841955539055}
   m_Layer: 11
   m_Name: Ally_HatMask
   m_TagString: Ally
@@ -457,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31cd2f1f8923442459064e4bdb4292ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statsData: {fileID: 11400000, guid: 6e2d6e8560e47b84b98102b36f6a241f, type: 2}
+  statsData: {fileID: 11400000, guid: ce6358b702f5949419f62755abc6d670, type: 2}
   MainObject: {fileID: 4249040475002768782}
   hp: 0
   maxHp: 0
@@ -637,11 +638,36 @@ MonoBehaviour:
   minJumpDistance: 1
   jumpHeight: 3
   jumpInterval: 0.1
+  visualTransform: {fileID: 7590819465773348557}
+  squashScale: {x: 1.3, y: 0.6, z: 1.3}
+  stretchScale: {x: 0.7, y: 1.4, z: 0.7}
+  landScale: {x: 1.4, y: 0.5, z: 1.4}
+  animDuration: 0.15
   impactRadius: 2.5
   impactForce: 8
   targetLayers:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &7033753841955539055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4249040475002768782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e2bc14d6b273d428ca5a17d52c5316, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rayLength: 0.5
+  rayOriginOffset: {x: 0, y: 0.2, z: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  checkInterval: 4
+  groundedBoolName: Grounded
+  landTriggerName: OnLand
 --- !u!1001 &7985651159349530918
 PrefabInstance:
   m_ObjectHideFlags: 0
