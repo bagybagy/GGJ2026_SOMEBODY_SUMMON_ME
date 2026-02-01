@@ -23,9 +23,17 @@ public class GameTimerManager : MonoBehaviour
     [SerializeField] private AudioClip seWarning;
     [SerializeField] private AudioClip seBoss;
 
+    [Header("Boss Spawn Settings")]
+    [SerializeField] private GameObject bossPrefab;           // ボスのPrefab
+    [SerializeField] private Transform bossSpawnPoint;        // 出現位置
+    [SerializeField] private Vector3 bossSpawnOffset = Vector3.zero; // 位置オフセット（SpawnPointがない場合用）
+    [SerializeField] private CameraIntroManager cameraIntroManager; // カメラフォーカス用
+    [SerializeField] private float bossBannerTimeOffset = 0f; // ボスバナーを表示するタイミングのオフセット（0=3分ちょうど、5=5秒前）
+
     [Header("Animation Settings")]
     [SerializeField] private float slideDuration = 0.5f; // イン/アウトにかかる時間
-    [SerializeField] private float stayDuration = 2.0f;  // 画面中央に留まる時間
+    [SerializeField] private float stayDuration = 2.0f;  // ボス時などに画面中央に留まる時間
+    [SerializeField] private float stayDurationShort = 1.0f; // 残り2分などの短い表示時間
     // 画面外(右) -> 中央 -> 画面外(左)
     [SerializeField] private Vector2 startPos = new Vector2(1500, 0);
     [SerializeField] private Vector2 centerPos = new Vector2(0, 0);
@@ -35,6 +43,7 @@ public class GameTimerManager : MonoBehaviour
     private bool announced2Min = false;
     private bool announced1Min = false;
     private bool announcedBoss = false;
+    private bool bossSpawned = false; // ボス生成済みフラグ
 
     private float currentTime;
     private bool isTimerRunning = false;
@@ -96,17 +105,28 @@ public class GameTimerManager : MonoBehaviour
         if (currentTime <= 120f && !announced2Min) // 残り2分 (120秒)
         {
             announced2Min = true;
-            PlayAnnouncement(sprite2Min, seWarning);
+            PlayAnnouncement(sprite2Min, seWarning, stayDurationShort);
         }
-        else if (currentTime <= 60f && !announced1Min) // 残り1分 (60秒)
+        
+        if (currentTime <= 60f && !announced1Min) // 残り1分 (60秒)
         {
             announced1Min = true;
-            PlayAnnouncement(sprite1Min, seWarning);
+            PlayAnnouncement(sprite1Min, seWarning, stayDurationShort);
         }
-        else if (currentTime <= 0f && !announcedBoss) // 終了 (Boss)
+
+        // ボスバナー表示チェック
+        if (currentTime <= bossBannerTimeOffset && !announcedBoss)
         {
             announcedBoss = true;
-            PlayAnnouncement(spriteBoss, seBoss);
+            PlayAnnouncement(spriteBoss, seBoss, stayDuration);
+        }
+
+        // ボス生成チェック
+        if (currentTime <= 0f && !bossSpawned)
+        {
+            bossSpawned = true;
+            SpawnBoss();
+            
             // タイマー停止（あるいはボス戦フェーズへ移行）
             // isTimerRunning = false; 
         }
@@ -149,12 +169,11 @@ public class GameTimerManager : MonoBehaviour
             return;
         }
         operationUI.SetActive(true);
-        StopAllCoroutines(); // カットイン用のが止まるリスクあるので注意。干渉しないよう管理すべき
-        // 本来はコルーチン変数を分けてStopCoroutineすべきだが、簡易実装として
-        // カットイン中なら放置UIは出さない等の制御もアリ。
-        // ここではIdle用のコルーチンだけ回す
         
-        StartCoroutine(FadeUI(1.0f));
+        // 特定のコルーチンだけを安全に停止
+        if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
+        fadeCoroutine = StartCoroutine(FadeUI(1.0f));
+
         if (imageCycleCoroutine != null) StopCoroutine(imageCycleCoroutine);
         imageCycleCoroutine = StartCoroutine(CycleImages());
     }
@@ -219,7 +238,7 @@ public class GameTimerManager : MonoBehaviour
     private Coroutine cutInCoroutine;
     private Coroutine fadeCoroutine;
 
-    private void PlayAnnouncement(Sprite sprite, AudioClip clip)
+    private void PlayAnnouncement(Sprite sprite, AudioClip clip, float displayTime)
     {
         if (cutInImageUI == null) return;
         
@@ -235,13 +254,13 @@ public class GameTimerManager : MonoBehaviour
         {
             audioSource.PlayOneShot(clip);
         }
-
+ 
         // 3. アニメーション開始
         if (cutInCoroutine != null) StopCoroutine(cutInCoroutine);
-        cutInCoroutine = StartCoroutine(CutInSequence());
+        cutInCoroutine = StartCoroutine(CutInSequence(displayTime));
     }
 
-    private IEnumerator CutInSequence()
+    private IEnumerator CutInSequence(float displayTime)
     {
         cutInImageUI.enabled = true;
         
@@ -260,7 +279,7 @@ public class GameTimerManager : MonoBehaviour
         cutInRect.anchoredPosition = centerPos;
 
         // --- Stay ---
-        yield return new WaitForSeconds(stayDuration);
+        yield return new WaitForSeconds(displayTime);
 
         // --- Slide Out (EaseIn) ---
         timer = 0f;
@@ -277,6 +296,7 @@ public class GameTimerManager : MonoBehaviour
         cutInRect.anchoredPosition = endPos;
 
         cutInImageUI.enabled = false;
+        cutInCoroutine = null;
     }
 
     // デバッグ用: 強制的に時間をセットする
@@ -284,5 +304,39 @@ public class GameTimerManager : MonoBehaviour
     {
         currentTime = seconds;
         // フラグのリセットは状況によるが、テスト時は再生成するか手動リセットが必要
+    }
+
+    // 💡 ボス生成処理
+    private void SpawnBoss()
+    {
+        if (bossPrefab == null)
+        {
+            Debug.LogWarning("GameTimerManager: Boss Prefab is not assigned!");
+            return;
+        }
+
+        Vector3 spawnPosition;
+        Quaternion spawnRotation = Quaternion.identity;
+
+        if (bossSpawnPoint != null)
+        {
+            // SpawnPointが指定されている場合
+            spawnPosition = bossSpawnPoint.position;
+            spawnRotation = bossSpawnPoint.rotation;
+        }
+        else
+        {
+            // SpawnPointがない場合はオフセットを使用
+            spawnPosition = bossSpawnOffset;
+        }
+
+        GameObject boss = Instantiate(bossPrefab, spawnPosition, spawnRotation);
+        Debug.Log($"Boss spawned at {spawnPosition}");
+
+        // カメラフォーカス
+        if (cameraIntroManager != null && boss != null)
+        {
+            cameraIntroManager.FocusOnBoss(boss.transform);
+        }
     }
 }

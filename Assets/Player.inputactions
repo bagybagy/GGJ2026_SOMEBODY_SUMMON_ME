@@ -68,6 +68,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Retry",
+                    "type": "Button",
+                    "id": "38937bc4-9907-4fad-ad7f-0e908c574304",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -387,6 +396,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Gather",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9d9d666d-537e-444f-8ba0-ecef26a1ed0c",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Retry",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "818812ce-1e2c-41d2-a99a-7e5a97569a63",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Retry",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

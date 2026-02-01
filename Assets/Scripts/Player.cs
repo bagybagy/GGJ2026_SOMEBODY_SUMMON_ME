@@ -292,18 +292,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    // 💡 追加: 合体アクション
-    public void OnMerge(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            UpdateInputTime();
-            if (MergeManager.Instance != null)
-            {
-                MergeManager.Instance.TryMerge(transform.position);
-            }
-        }
-    }
 
     // 💡 追加: 集合アクション
     public void OnGather(InputAction.CallbackContext context)
@@ -324,17 +312,27 @@ public class Player : MonoBehaviour
         }
     }
     
+    // 💡 追加: リトライアクション
+    public void OnRetry(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            UpdateInputTime();
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.GameOver();
+                Debug.Log("Player triggered Retry (GameOver)!");
+            }
+        }
+    }
+    
     // Updateに追加でデバッグキー実装（InputSystem未設定時のため）
     private void Update()
     {
-        // 開発用ショートカット: Rで蘇生、Mで合体、Gで集合
+        // 開発用ショートカット: Rで蘇生、Gで集合
         if (Keyboard.current.rKey.wasPressedThisFrame)
         {
             if (ReviveManager.Instance != null) ReviveManager.Instance.ReviveAll();
-        }
-        if (Keyboard.current.mKey.wasPressedThisFrame)
-        {
-            if (MergeManager.Instance != null) MergeManager.Instance.TryMerge(transform.position);
         }
         if (Keyboard.current.gKey.wasPressedThisFrame)
         {
