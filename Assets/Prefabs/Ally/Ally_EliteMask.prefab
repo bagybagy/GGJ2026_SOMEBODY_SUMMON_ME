@@ -398,6 +398,7 @@ GameObject:
   - component: {fileID: 2037893889768245615}
   - component: {fileID: 7033753841955539055}
   - component: {fileID: 7388918812275093883}
+  - component: {fileID: 8107158750892285985}
   m_Layer: 11
   m_Name: Ally_EliteMask
   m_TagString: Ally
@@ -522,7 +523,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4249040475002768782}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cec1f47567887964a93698130dae0a96, type: 3}
   m_Name: 
@@ -601,11 +602,12 @@ MonoBehaviour:
   attackRange: 20
   followRange: 10
   stopFollowRange: 3
+  searchRange: 30
   knockbackPower: 10
   knockbackDuration: 0.5
   actionWaitDuration: 0.2
-  moveSpeed: 3.5
-  mergeLevel: 1
+  moveSpeed: 5.5
+  mergeLevel: 2
 --- !u!114 &2037893889768245615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -656,12 +658,34 @@ MonoBehaviour:
   actionType: 0
   missilePrefab: {fileID: 2101409546664743320, guid: 74d8a956985eda24f97bf40bd95d5f2e, type: 3}
   launchPoint: {fileID: 4820775200652811665}
-  shotCount: 5
+  shotCount: 10
   shotInterval: 0.2
-  dispersionRadius: 3
-  cooldown: 5
+  dispersionRadius: 3.5
+  cooldown: 2
   preDelay: 1
   chargeEffect: {fileID: 0}
+--- !u!114 &8107158750892285985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4249040475002768782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74bcee17c281a3b48a05896147b6212c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionType: 0
+  moveSpeed: 3
+  idealDistance: 2
+  distanceThreshold: 0.2
+  duration: 2
+  clockwise: 1
+  projectilePrefab: {fileID: 794671614004829523, guid: 00317185177acb94c87b722129a67132, type: 3}
+  muzzlePoint: {fileID: 609427693891102806}
+  fireInterval: 0.5
+  muzzleOffset: {x: 0, y: 1.5, z: 0.5}
 --- !u!1001 &5929406266681638293
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -722,6 +746,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7510213348091407862}
   m_SourcePrefab: {fileID: 100100000, guid: c727c53fbdce28849a399062d09fb608, type: 3}
+--- !u!4 &609427693891102806 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6502182839619065283, guid: c727c53fbdce28849a399062d09fb608, type: 3}
+  m_PrefabInstance: {fileID: 5929406266681638293}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4820775200652811665 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8021001004253913084, guid: c727c53fbdce28849a399062d09fb608, type: 3}

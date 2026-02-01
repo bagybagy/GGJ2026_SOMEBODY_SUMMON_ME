@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde2ae2149da7004fabdb12b0310b71b, type: 3}
   m_Name: EnemyEliteSWAT
   m_EditorClassIdentifier: 
-  MaxHp: 30
-  AttackPower: 10
+  MaxHp: 20
+  AttackPower: 5
   CriticalRate: 0.2
   HpGrowth: 5
   AttackGrowth: 2

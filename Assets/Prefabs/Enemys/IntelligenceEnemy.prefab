@@ -455,13 +455,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statsData: {fileID: 11400000, guid: 16ffcebebd454444e860a967c925696d, type: 2}
   MainObject: {fileID: 4249040475002768782}
-  hp: 0
-  maxHp: 0
+  hp: 10
+  maxHp: 10
   level: 1
   currentExp: 0
-  expToNextLevel: 0
-  currentAttack: 0
-  currentCritRate: 0
+  expToNextLevel: 100
+  currentAttack: 10
+  currentCritRate: 0.2
   popupPrefab: {fileID: 3370638208151353108, guid: 3891d86a4744c554b861cb7e782209a5, type: 3}
   destroyEffect: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
   damageEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e, type: 3}
@@ -586,15 +586,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4249040475002768782}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfd97b82e31e7d34daf6d725d8b150ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   actionType: 0
   attackDuration: 0.5
-  cooldown: 2
-  attackCollider: {fileID: 0}
+  cooldown: 5
+  attackCollider: {fileID: 3801755715768452666}
 --- !u!114 &8279367219691378978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -613,7 +613,7 @@ MonoBehaviour:
   faceTargetSpeed: 5
   burstCount: 1
   burstInterval: 0.2
-  cooldown: 2
+  cooldown: 5
 --- !u!1001 &2197712083875957470
 PrefabInstance:
   m_ObjectHideFlags: 0
