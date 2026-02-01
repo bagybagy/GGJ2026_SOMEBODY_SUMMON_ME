@@ -454,7 +454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31cd2f1f8923442459064e4bdb4292ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statsData: {fileID: 11400000, guid: 16ffcebebd454444e860a967c925696d, type: 2}
+  statsData: {fileID: 11400000, guid: 1030ea53c3a6c2045870e7220402071c, type: 2}
   MainObject: {fileID: 4249040475002768782}
   hp: 0
   maxHp: 0

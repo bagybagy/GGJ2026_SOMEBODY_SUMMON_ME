@@ -32,6 +32,7 @@ public class AllyAI : MonoBehaviour
     [SerializeField] float attackRange = 7.0f; 
     [SerializeField] float followRange = 10.0f; // プレイヤーから離れすぎた場合の追従開始距離
     [SerializeField] float stopFollowRange = 3.0f; // 追従終了距離
+    [SerializeField] float searchRange = 30.0f; // 敵を索敵する最大範囲
 
     // ノックバック設定
     [Header("Knockback Settings")]
@@ -333,7 +334,8 @@ public class AllyAI : MonoBehaviour
         foreach (GameObject t in enemies)
         {
             float dist = Vector3.Distance(t.transform.position, currentPos);
-            if (dist < minDist)
+            // 💡 追加: 索敵範囲外の敵は無視する
+            if (dist < minDist && dist <= searchRange)
             {
                 minDist = dist;
                 nearest = t;
