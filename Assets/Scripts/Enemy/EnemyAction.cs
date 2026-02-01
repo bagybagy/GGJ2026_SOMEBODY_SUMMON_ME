@@ -17,11 +17,11 @@ public abstract class EnemyAction : MonoBehaviour
     public abstract IEnumerator Execute(); // 行動実行（コルーチン）
     public abstract void Stop();           // 強制停止
 
-    // 💡Step13.1 現在ターゲットの参照
-    // 💡 1. 脳みそへの参照をキャッシュする変数
+    // 💡 Step13.1 現在ターゲットの参照
     // 💡 1. 脳みそへの参照をキャッシュする変数
     private EnemyAI _brain;
     private AllyAI _allyBrain;
+    private BossAI _bossBrain; // 💡 追加
 
     // 💡 2. 子クラスが使うための「ターゲット取得プロパティ」
     // 今後、継承されたクラスではbrainに従ってターゲットを決めて、直接利用できるようになる
@@ -29,16 +29,18 @@ public abstract class EnemyAction : MonoBehaviour
     {
         get
         {
-            // 初回アクセス時にEnemyAIを取得（Lazy Load）
-            if (_brain == null && _allyBrain == null)
+            // 初回アクセス時に各AIを取得（Lazy Load）
+            if (_brain == null && _allyBrain == null && _bossBrain == null)
             {
                 _brain = GetComponent<EnemyAI>();
                 _allyBrain = GetComponent<AllyAI>();
+                _bossBrain = GetComponent<BossAI>();
             }
 
             // AIが持っているターゲットを返す
             if (_brain != null) return _brain.CurrentTarget;
             if (_allyBrain != null) return _allyBrain.CurrentTarget;
+            if (_bossBrain != null) return _bossBrain.CurrentTarget;
 
             return null;
         }

@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 2604605997818951799}
   m_Layer: 7
   m_Name: Hitbox
-  m_TagString: Ally
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

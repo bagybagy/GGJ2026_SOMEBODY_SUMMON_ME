@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic; // 💡 追加
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,6 +39,18 @@ public class GameTimerManager : MonoBehaviour
     private float currentTime;
     private bool isTimerRunning = false;
 
+    [Header("Idle Operation Guide")]
+    [SerializeField] private GameObject operationUI; // 操作ガイド全体の親
+    [SerializeField] private Image operationImage;   // 切り替え表示する画像
+    [SerializeField] private List<Sprite> operationSprites; // ランダム画像のリスト
+    [SerializeField] private float idleThreshold = 5.0f; // 放置判定時間
+    [SerializeField] private float imageCycleInterval = 2.0f; // 画像切り替え間隔
+    
+    // Idle UI用
+    private bool isIdleStats = false;
+    private CanvasGroup opCanvasGroup;
+    private Coroutine imageCycleCoroutine;
+
     void Start()
     {
         currentTime = gameTime;
@@ -57,6 +70,16 @@ public class GameTimerManager : MonoBehaviour
         {
             cutInImageUI.enabled = false; // 見えないようにしておく
         }
+        
+        // Idle UI初期化
+        if (operationUI != null)
+        {
+            opCanvasGroup = operationUI.GetComponent<CanvasGroup>();
+            if (opCanvasGroup == null) opCanvasGroup = operationUI.AddComponent<CanvasGroup>();
+            opCanvasGroup.alpha = 0f; // 最初は隠す
+            operationUI.SetActive(false);
+        }
+
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
@@ -87,7 +110,114 @@ public class GameTimerManager : MonoBehaviour
             // タイマー停止（あるいはボス戦フェーズへ移行）
             // isTimerRunning = false; 
         }
+        
+        // 放置チェック
+        CheckIdleState();
     }
+
+    // 放置判定とUI制御
+    private void CheckIdleState()
+    {
+        // 経過時間計算
+        float timeSinceInput = Time.time - Player.LastInputTime;
+
+        if (timeSinceInput >= idleThreshold)
+        {
+            // 放置状態へ
+            if (!isIdleStats)
+            {
+                isIdleStats = true;
+                ShowIdleUI();
+            }
+        }
+        else
+        {
+            // 操作中
+            if (isIdleStats)
+            {
+                isIdleStats = false;
+                HideIdleUI();
+            }
+        }
+    }
+
+    private void ShowIdleUI()
+    {
+        if (operationUI == null) 
+        {
+            Debug.LogWarning("GameTimerManager: operationUI is not assigned in Inspector!");
+            return;
+        }
+        operationUI.SetActive(true);
+        StopAllCoroutines(); // カットイン用のが止まるリスクあるので注意。干渉しないよう管理すべき
+        // 本来はコルーチン変数を分けてStopCoroutineすべきだが、簡易実装として
+        // カットイン中なら放置UIは出さない等の制御もアリ。
+        // ここではIdle用のコルーチンだけ回す
+        
+        StartCoroutine(FadeUI(1.0f));
+        if (imageCycleCoroutine != null) StopCoroutine(imageCycleCoroutine);
+        imageCycleCoroutine = StartCoroutine(CycleImages());
+    }
+
+    private void HideIdleUI()
+    {
+        if (operationUI == null) return;
+        
+        if (imageCycleCoroutine != null) StopCoroutine(imageCycleCoroutine);
+        
+        // フェードアウト
+        StartCoroutine(FadeUI(0.0f, () => {
+            operationUI.SetActive(false);
+        }));
+    }
+
+    private IEnumerator FadeUI(float targetAlpha, System.Action onComplete = null)
+    {
+        if (opCanvasGroup == null) yield break;
+        float startAlpha = opCanvasGroup.alpha;
+        float t = 0f;
+        while(t < 0.5f)
+        {
+            t += Time.deltaTime;
+            opCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, t / 0.5f);
+            yield return null;
+        }
+        opCanvasGroup.alpha = targetAlpha;
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator CycleImages()
+    {
+        if (operationImage == null)
+        {
+            Debug.LogError("Operation Image is null!");
+            yield break;
+        }
+        if (operationSprites == null || operationSprites.Count == 0)
+        {
+            Debug.LogError("Operation Sprites list is empty/null!");
+            yield break;
+        }
+
+        Debug.Log($"Starting CycleImages. Sprite Count: {operationSprites.Count}");
+
+        while (true)
+        {
+            // ランダム選択
+            int index = Random.Range(0, operationSprites.Count);
+            Sprite sprite = operationSprites[index];
+            if (sprite == null) Debug.LogWarning($"Sprite at index {index} is null!");
+
+            operationImage.sprite = sprite;
+            operationImage.SetNativeSize(); // 必要なら
+            
+            yield return new WaitForSeconds(imageCycleInterval);
+        }
+    }
+
+    // Coroutine tracking
+    private Coroutine cutInCoroutine;
+    private Coroutine fadeCoroutine;
 
     private void PlayAnnouncement(Sprite sprite, AudioClip clip)
     {
@@ -97,7 +227,7 @@ public class GameTimerManager : MonoBehaviour
         if (sprite != null)
         {
             cutInImageUI.sprite = sprite;
-            cutInImageUI.SetNativeSize(); // 画像サイズに合わせる
+            cutInImageUI.SetNativeSize(); 
         }
         
         // 2. SE再生
@@ -107,8 +237,8 @@ public class GameTimerManager : MonoBehaviour
         }
 
         // 3. アニメーション開始
-        StopAllCoroutines();
-        StartCoroutine(CutInSequence());
+        if (cutInCoroutine != null) StopCoroutine(cutInCoroutine);
+        cutInCoroutine = StartCoroutine(CutInSequence());
     }
 
     private IEnumerator CutInSequence()

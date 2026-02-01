@@ -8,6 +8,23 @@ public class ReviveManager : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private GameObject reviveEffectPrefab;
+    [SerializeField] private float cooldownDuration = 30f; // クールダウン時間（秒）
+
+    // 現在のクールダウン残り時間
+    private float currentCooldown = 0f;
+
+    // 外部公開用: クールダウンの進捗率 (0.0f = 使用可能, 1.0f = 直後)
+    public float CooldownRatio 
+    {
+        get 
+        {
+            if (cooldownDuration <= 0f) return 0f;
+            return Mathf.Clamp01(currentCooldown / cooldownDuration);
+        }
+    }
+
+    // 外部公開用: 使用可能かどうか
+    public bool CanRevive => currentCooldown <= 0f;
 
     void Awake()
     {
@@ -21,10 +38,28 @@ public class ReviveManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (currentCooldown > 0f)
+        {
+            currentCooldown -= Time.deltaTime;
+        }
+    }
+
     // 全域蘇生
     public void ReviveAll()
     {
+        // クールダウンチェック
+        if (currentCooldown > 0f)
+        {
+            Debug.Log($"Revive is on cooldown! Remaining: {currentCooldown:F1}s");
+            return;
+        }
+
         Debug.Log("Global Revive Activated!");
+        
+        // クールダウン開始
+        currentCooldown = cooldownDuration;
         
         // シーン内の全Allyを検索
         // FindGameObjectsWithTagは非アクティブなオブジェクトを見つけられない場合があるが、

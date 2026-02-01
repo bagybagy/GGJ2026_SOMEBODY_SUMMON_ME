@@ -138,10 +138,20 @@ public class Player : MonoBehaviour
         playerAnimator.SetTrigger("Jump");
     }
 
+    // 💡 放置判定用: 最後の入力時刻
+    public static float LastInputTime { get; private set; }
+
+    // 入力があるたびに時刻を更新するヘルパー
+    private void UpdateInputTime()
+    {
+        LastInputTime = Time.time;
+    }
+
     // Move アクションによって呼び出されます。
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
+        UpdateInputTime();
     }
 
     // Jump のInputによって呼び出されます。
@@ -150,6 +160,7 @@ public class Player : MonoBehaviour
         if (context.started)
         {
             Jump();
+            UpdateInputTime();
         }
     }
 
@@ -172,6 +183,7 @@ public class Player : MonoBehaviour
         if (context.started)
         {
             Fire();
+            UpdateInputTime();
         }
     }
     // Attack のアクションの中身を記述します。
@@ -223,6 +235,7 @@ public class Player : MonoBehaviour
         if (context.started)
         {
             Attack();
+            UpdateInputTime();
         }
     }
 
@@ -270,6 +283,7 @@ public class Player : MonoBehaviour
     {
         if (context.performed)
         {
+            UpdateInputTime();
             if (ReviveManager.Instance != null)
             {
                 ReviveManager.Instance.ReviveAll();
@@ -283,6 +297,7 @@ public class Player : MonoBehaviour
     {
         if (context.performed)
         {
+            UpdateInputTime();
             if (MergeManager.Instance != null)
             {
                 MergeManager.Instance.TryMerge(transform.position);
@@ -295,6 +310,7 @@ public class Player : MonoBehaviour
     {
         if (context.performed)
         {
+             UpdateInputTime();
              // トグルにするか、押している間だけにするかは仕様次第だが、
              // 今回は「トグル」または「一度呼ぶと集合開始」とする。
              // AllyAIの仕様上、Stopを呼ばないと解除されないので、ボタンを押すたびに切り替える実装にする例：
